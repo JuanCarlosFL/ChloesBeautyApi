@@ -1,12 +1,12 @@
 ﻿namespace ChloesBeauty.API.ViewModels
 {
-    public class UserViewModel
+    public class LoyaltiesViewModel
     {
         #region Public Properties
 
-        public string Password { get; set; }
+        public string Name { get; set; }
 
-        public string UserName { get; set; }
+        public int Points { get; set; }
 
         #endregion Public Properties
     }
