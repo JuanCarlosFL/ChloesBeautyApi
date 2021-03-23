@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChloesBeauty.API.Models;
 using ChloesBeauty.API.ViewModels;
+using System;
 
 namespace ChloesBeauty.API.Controllers
 {
@@ -84,6 +85,8 @@ namespace ChloesBeauty.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
         {
+            appointment.Deleted = false;
+            appointment.ModifiedDate = DateTime.Now;
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
 

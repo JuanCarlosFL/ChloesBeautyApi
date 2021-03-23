@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChloesBeauty.API.Models;
+using ChloesBeauty.API.ViewModels;
 
 namespace ChloesBeauty.API.Controllers
 {
@@ -72,6 +73,16 @@ namespace ChloesBeauty.API.Controllers
         public async Task<ActionResult<IEnumerable<Treatment>>> GetTreatments()
         {
             return await _context.Treatments.ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("GetTreatmentsForAppointment")]
+        public async Task<ActionResult<IEnumerable<TreatmentsForAppointmentViewModel>>> GetTreatmentsForAppointment()
+        {
+            return await _context.Treatments
+                .Where(t => !t.Deleted)
+                .Select(t => new TreatmentsForAppointmentViewModel { Id = t.TreatmentId, Name = t.Name, Duration = t.Duration, Price = t.Price, Points = t.Points })
+                .ToListAsync();
         }
 
         // POST: api/Treatment To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
