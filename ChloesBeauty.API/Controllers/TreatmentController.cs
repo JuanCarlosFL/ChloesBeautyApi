@@ -48,7 +48,7 @@ namespace ChloesBeauty.API.Controllers
                 return NotFound();
             }
 
-            _context.Treatments.Remove(treatment);
+            treatment.Deleted = true;
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -72,7 +72,7 @@ namespace ChloesBeauty.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Treatment>>> GetTreatments()
         {
-            return await _context.Treatments.ToListAsync();
+            return await _context.Treatments.Where(t => !t.Deleted).ToListAsync();
         }
 
         [HttpGet]

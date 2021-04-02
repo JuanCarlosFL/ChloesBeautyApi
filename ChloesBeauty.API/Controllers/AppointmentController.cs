@@ -49,7 +49,7 @@ namespace ChloesBeauty.API.Controllers
                 return NotFound();
             }
 
-            _context.Appointments.Remove(appointment);
+            appointment.Deleted = true;
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -59,7 +59,7 @@ namespace ChloesBeauty.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
         {
-            return await _context.Appointments.ToListAsync();
+            return await _context.Appointments.Where(a => !a.Deleted).ToListAsync();
         }
 
         // GET: api/Appointment/5

@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChloesBeauty.API.Models;
+using System;
+using ChloesBeauty.API.Helpers;
 
 namespace ChloesBeauty.API.Controllers
 {
@@ -78,10 +80,39 @@ namespace ChloesBeauty.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(Person person)
         {
+            var personFound = await _context.Persons.Where(p => p.Email == person.Email).FirstOrDefaultAsync();
+
+            if (personFound != null)
+                return BadRequest(false);
+
+            person.Deleted = false;
+            person.ModifiedDate = DateTime.Now;
             _context.Persons.Add(person);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPerson", new { id = person.PersonId }, person);
+            var user = new User
+            {
+                UserName = person.Email,
+                Password = Functions.Encrypt("Temporal"),
+                PersonId = person.PersonId,
+                IsActive = true,
+                ModifiedDate = DateTime.Now
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            var userRole = new UsersRole
+            {
+                UserId = person.PersonId,
+                RoleId = (byte)Enums.Roles.Client,
+                ModifiedDate = DateTime.Now
+            };
+
+            _context.UsersRoles.Add(userRole);
+            await _context.SaveChangesAsync();
+
+            return Ok(true);
         }
 
         // PUT: api/Person/5 To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -93,6 +124,7 @@ namespace ChloesBeauty.API.Controllers
                 return BadRequest();
             }
 
+            person.ModifiedDate = DateTime.Now;
             _context.Entry(person).State = EntityState.Modified;
 
             try

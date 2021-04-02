@@ -48,7 +48,7 @@ namespace ChloesBeauty.API.Controllers
                 return NotFound();
             }
 
-            _context.Loyalties.Remove(loyalty);
+            loyalty.Deleted = true;
             await _context.SaveChangesAsync();
 
             return NoContent();

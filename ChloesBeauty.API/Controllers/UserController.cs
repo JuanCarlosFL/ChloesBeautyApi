@@ -68,6 +68,16 @@ namespace ChloesBeauty.API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
+            var userRole = new UsersRole
+            {
+                UserId = person.PersonId,
+                RoleId = (byte)Enums.Roles.Client,
+                ModifiedDate = DateTime.Now
+            };
+
+            _context.UsersRoles.Add(userRole);
+            await _context.SaveChangesAsync();
+
             return Ok(true);
         }
 
