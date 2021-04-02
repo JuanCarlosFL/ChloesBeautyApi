@@ -108,6 +108,32 @@ namespace ChloesBeauty.API.Controllers
             return Ok(user);
         }
 
+        [HttpGet]
+        [Route("GetRole/{username}")]
+        public ActionResult<IEnumerable<UsersRole>> GetRole(string username)
+        {
+            IEnumerable<string> user = new List<string>();
+
+            try
+            {
+                if (!String.IsNullOrEmpty(username))
+                {
+                    user = _context.Users
+                        .Include(u => u.UsersRoles)
+                        .ThenInclude(r => r.Role)
+                        .Where(u => u.UserName == username)
+                        .Select(r => r.UsersRoles.Select(r => r.Role.Name))
+                        .FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                // to do
+            }
+
+            return user == null ? NotFound() : Ok(user);
+        }
+
         [HttpPost]
         public async Task<ActionResult<bool>> IsValidLoginAsync([FromBody] UserViewModel user)
         {

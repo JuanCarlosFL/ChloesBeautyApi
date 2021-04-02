@@ -39,18 +39,18 @@ namespace ChloesBeauty.API.Controllers
 
         // DELETE: api/Person/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePerson(int id)
+        public async Task<ActionResult<bool>> DeletePerson(int id)
         {
             var person = await _context.Persons.FindAsync(id);
             if (person == null)
             {
-                return NotFound();
+                return NotFound(false);
             }
 
-            _context.Persons.Remove(person);
+            person.Deleted = true;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return true;
         }
 
         // GET: api/Person/5
@@ -71,7 +71,7 @@ namespace ChloesBeauty.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersons()
         {
-            return await _context.Persons.ToListAsync();
+            return await _context.Persons.Where(p => !p.Deleted).ToListAsync();
         }
 
         // POST: api/Person To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
