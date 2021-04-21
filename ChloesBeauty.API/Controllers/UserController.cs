@@ -35,50 +35,59 @@ namespace ChloesBeauty.API.Controllers
         [Route("CreateUser")]
         public async Task<ActionResult<bool>> CreateUserAsync([FromBody] RegisterViewModel model)
         {
-            if (String.IsNullOrEmpty(model.Name))
-                return BadRequest(false);
-
-            var userFound = await _context.Users.Where(u => u.UserName == model.Email).FirstOrDefaultAsync();
-
-            if (userFound != null)
-                return BadRequest(false);
-
-            var person = new Person
+            try
             {
-                Name = model.Name,
-                Surname = model.Surname,
-                Email = model.Email,
-                Points = 0,
-                Deleted = false,
-                ModifiedDate = DateTime.Now
-            };
 
-            _context.Persons.Add(person);
-            await _context.SaveChangesAsync();
 
-            var user = new User
+                if (String.IsNullOrEmpty(model.Name))
+                    return BadRequest(false);
+
+                var userFound = await _context.Users.Where(u => u.UserName == model.Email).FirstOrDefaultAsync();
+
+                if (userFound != null)
+                    return BadRequest(false);
+
+                var person = new Person
+                {
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    Email = model.Email,
+                    Points = 0,
+                    Deleted = false,
+                    ModifiedDate = DateTime.Now
+                };
+
+                _context.Persons.Add(person);
+                await _context.SaveChangesAsync();
+
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Password = Functions.Encrypt(model.Password),
+                    PersonId = person.PersonId,
+                    IsActive = true,
+                    ModifiedDate = DateTime.Now
+                };
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                var userRole = new UsersRole
+                {
+                    UserId = person.PersonId,
+                    RoleId = (byte)Enums.Roles.Client,
+                    ModifiedDate = DateTime.Now
+                };
+
+                _context.UsersRoles.Add(userRole);
+                await _context.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch (Exception ex)
             {
-                UserName = model.Email,
-                Password = Functions.Encrypt(model.Password),
-                PersonId = person.PersonId,
-                IsActive = true,
-                ModifiedDate = DateTime.Now
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            var userRole = new UsersRole
-            {
-                UserId = person.PersonId,
-                RoleId = (byte)Enums.Roles.Client,
-                ModifiedDate = DateTime.Now
-            };
-
-            _context.UsersRoles.Add(userRole);
-            await _context.SaveChangesAsync();
-
-            return Ok(true);
+                return Ok(false);
+            }
         }
 
         [HttpGet]

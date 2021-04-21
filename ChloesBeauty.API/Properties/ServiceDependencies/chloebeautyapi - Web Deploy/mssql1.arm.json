@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('chloesbeauty', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('ChloesBeauty', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -45,28 +45,29 @@
       "properties": {
         "mode": "Incremental",
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "resources": [
             {
-              "name": "ChloesBeautyapi",
-              "type": "Microsoft.ApiManagement/service",
+              "kind": "v12.0",
               "location": "[parameters('resourceLocation')]",
-              "properties": {},
-              "sku": {
-                "name": "Developer",
-                "capacity": 1
-              },
-              "identity": null,
-              "apiVersion": "2019-12-01"
+              "name": "chloes-beauty",
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2017-10-01-preview"
             },
             {
-              "type": "Microsoft.ApiManagement/service/apis",
-              "name": "ChloesBeautyapi/chloesbeauty",
-              "properties": {},
-              "apiVersion": "2019-12-01",
+              "sku": {
+                "name": "Basic",
+                "tier": "Basic",
+                "capacity": 5
+              },
+              "kind": "v12.0,user",
+              "location": "[parameters('resourceLocation')]",
+              "name": "chloes-beauty/ChloesBeauty",
+              "type": "Microsoft.Sql/servers/databases",
+              "apiVersion": "2017-10-01-preview",
               "dependsOn": [
-                "ChloesBeautyapi"
+                "chloes-beauty"
               ]
             }
           ]
@@ -75,6 +76,6 @@
     }
   ],
   "metadata": {
-    "_dependencyType": "apis.azure"
+    "_dependencyType": "mssql.azure"
   }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChloesBeauty.API.Models;
 using ChloesBeauty.API.ViewModels;
+using System;
 
 namespace ChloesBeauty.API.Controllers
 {
@@ -40,18 +41,18 @@ namespace ChloesBeauty.API.Controllers
 
         // DELETE: api/Loyalty/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLoyalty(int id)
+        public async Task<ActionResult<bool>> DeleteLoyalty(int id)
         {
             var loyalty = await _context.Loyalties.FindAsync(id);
             if (loyalty == null)
             {
-                return NotFound();
+                return NotFound(false);
             }
 
             loyalty.Deleted = true;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return true;
         }
 
         // GET: api/Loyalty
@@ -62,6 +63,16 @@ namespace ChloesBeauty.API.Controllers
                 .Include(l => l.Treatment)
                 .Where(l => !l.Deleted)
                 .Select(l => new LoyaltiesViewModel { Name = l.Treatment.Name, Points = l.Points })
+                .ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("GetAllLoyalties")]
+        public async Task<ActionResult<IEnumerable<Loyalty>>> GetAllLoyalties()
+        {
+            return await _context.Loyalties
+                .Include(l => l.Treatment)
+                .Where(l => !l.Deleted)
                 .ToListAsync();
         }
 
@@ -83,10 +94,19 @@ namespace ChloesBeauty.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Loyalty>> PostLoyalty(Loyalty loyalty)
         {
-            _context.Loyalties.Add(loyalty);
-            await _context.SaveChangesAsync();
+            try
+            {
+                loyalty.Deleted = false;
+                loyalty.ModifiedDate = DateTime.Now;
+                _context.Loyalties.Add(loyalty);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetLoyalty", new { id = loyalty.LoyaltyId }, loyalty);
+                return CreatedAtAction("GetLoyalty", new { id = loyalty.LoyaltyId }, loyalty);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
         }
 
         // PUT: api/Loyalty/5 To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -98,6 +118,8 @@ namespace ChloesBeauty.API.Controllers
                 return BadRequest();
             }
 
+            loyalty.Deleted = false;
+            loyalty.ModifiedDate = DateTime.Now;
             _context.Entry(loyalty).State = EntityState.Modified;
 
             try

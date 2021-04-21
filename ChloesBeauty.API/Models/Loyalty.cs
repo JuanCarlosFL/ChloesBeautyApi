@@ -12,7 +12,7 @@ namespace ChloesBeauty.API.Models
 
         public int LoyaltyId { get; set; }
 
-        public virtual Treatment LoyaltyNavigation { get; set; }
+        //public virtual Treatment LoyaltyNavigation { get; set; }
 
         public DateTime ModifiedDate { get; set; }
 

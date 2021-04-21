@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChloesBeauty.API.Models;
 using ChloesBeauty.API.ViewModels;
+using System;
 
 namespace ChloesBeauty.API.Controllers
 {
@@ -40,7 +41,7 @@ namespace ChloesBeauty.API.Controllers
 
         // DELETE: api/Treatment/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTreatment(int id)
+        public async Task<ActionResult<bool>> DeleteTreatment(int id)
         {
             var treatment = await _context.Treatments.FindAsync(id);
             if (treatment == null)
@@ -51,7 +52,7 @@ namespace ChloesBeauty.API.Controllers
             treatment.Deleted = true;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return true;
         }
 
         // GET: api/Treatment/5
@@ -89,6 +90,8 @@ namespace ChloesBeauty.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Treatment>> PostTreatment(Treatment treatment)
         {
+            treatment.Deleted = false;
+            treatment.ModifiedDate = DateTime.Now;
             _context.Treatments.Add(treatment);
             await _context.SaveChangesAsync();
 
@@ -104,6 +107,7 @@ namespace ChloesBeauty.API.Controllers
                 return BadRequest();
             }
 
+            treatment.ModifiedDate = DateTime.Now;
             _context.Entry(treatment).State = EntityState.Modified;
 
             try
