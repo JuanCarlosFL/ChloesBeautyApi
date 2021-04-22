@@ -1,6 +1,7 @@
 ﻿using ChloesBeauty.API.Helpers;
 using ChloesBeauty.API.Models;
 using ChloesBeauty.API.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;

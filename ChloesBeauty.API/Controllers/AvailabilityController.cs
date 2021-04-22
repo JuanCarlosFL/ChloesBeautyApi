@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using ChloesBeauty.API.Models;
 using System;
 using ChloesBeauty.API.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChloesBeauty.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class AvailabilityController : ControllerBase
     {
         #region Private Fields

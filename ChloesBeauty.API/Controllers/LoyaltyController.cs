@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using ChloesBeauty.API.Models;
 using ChloesBeauty.API.ViewModels;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChloesBeauty.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class LoyaltyController : ControllerBase
     {
         #region Private Fields
