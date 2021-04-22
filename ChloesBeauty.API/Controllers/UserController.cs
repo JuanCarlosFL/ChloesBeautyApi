@@ -182,6 +182,7 @@ namespace ChloesBeauty.API.Controllers
                 return BadRequest($"El usuario {model.UserName} no existe");
 
             userFound.Password = Functions.Encrypt(model.Password);
+            userFound.ModifiedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
 

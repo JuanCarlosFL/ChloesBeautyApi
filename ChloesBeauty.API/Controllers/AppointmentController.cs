@@ -59,7 +59,12 @@ namespace ChloesBeauty.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
         {
-            return await _context.Appointments.Where(a => !a.Deleted).ToListAsync();
+            return await _context.Appointments
+                .Include(a => a.Availability)
+                .Include(t => t.Treatment)
+                .Include(p => p.Person)
+                .Where(a => !a.Deleted)
+                .ToListAsync();
         }
 
         // GET: api/Appointment/5
