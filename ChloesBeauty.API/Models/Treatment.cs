@@ -10,6 +10,7 @@ namespace ChloesBeauty.API.Models
         public Treatment()
         {
             Appointments = new HashSet<Appointment>();
+            Loyalties = new HashSet<Loyalty>();
         }
 
         public int TreatmentId { get; set; }
@@ -20,7 +21,7 @@ namespace ChloesBeauty.API.Models
         public bool Deleted { get; set; }
         public DateTime ModifiedDate { get; set; }
 
-        public virtual Loyalty Loyalty { get; set; }
+        public virtual ICollection<Loyalty> Loyalties { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }
