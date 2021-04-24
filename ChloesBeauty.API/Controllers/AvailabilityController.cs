@@ -7,6 +7,7 @@ using ChloesBeauty.API.Models;
 using System;
 using ChloesBeauty.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace ChloesBeauty.API.Controllers
 {
@@ -107,10 +108,28 @@ namespace ChloesBeauty.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Availability>> PostAvailability(Availability availability)
         {
-            _context.Availabilities.Add(availability);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var newAvailability = new Availability
+                {
+                    Date = availability.Date.AddHours(2),
+                    ModifiedDate = DateTime.Now
+                };
 
-            return CreatedAtAction("GetAvailability", new { id = availability.AvailabilityId }, availability);
+                var availabilityExist = await _context.Availabilities.Where(a => a.Date == newAvailability.Date).FirstOrDefaultAsync();
+
+                if (availabilityExist != null)
+                    return BadRequest(false);
+
+                _context.Availabilities.Add(newAvailability);
+                await _context.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(false);
+            }
         }
 
         // PUT: api/Availability/5 To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

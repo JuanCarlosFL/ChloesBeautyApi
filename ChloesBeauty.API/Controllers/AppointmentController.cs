@@ -59,13 +59,15 @@ namespace ChloesBeauty.API.Controllers
 
         // GET: api/Appointment
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
+        public async Task<ActionResult<IEnumerable<AppointmentsViewModel>>> GetAppointments()
         {
             return await _context.Appointments
                 .Include(a => a.Availability)
                 .Include(t => t.Treatment)
                 .Include(p => p.Person)
-                .Where(a => !a.Deleted)
+                .Where(a => !a.Deleted && a.Availability.Date.Date >= DateTime.Today)
+                .Select(a => new AppointmentsViewModel { AppointmentDate = a.Availability.Date, PersonName = $"{a.Person.Name} {a.Person.Surname}" , TreatmentName = a.Treatment.Name} )
+                .OrderBy(a => a.AppointmentDate)
                 .ToListAsync();
         }
 
