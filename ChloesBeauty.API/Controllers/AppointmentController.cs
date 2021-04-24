@@ -94,12 +94,23 @@ namespace ChloesBeauty.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
         {
-            appointment.Deleted = false;
-            appointment.ModifiedDate = DateTime.Now;
-            _context.Appointments.Add(appointment);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var person = await _context.Persons.Where(p => p.PersonId == appointment.PersonId).FirstOrDefaultAsync();
+                var treatment = await _context.Treatments.Where(t => t.TreatmentId == appointment.TreatmentId).FirstOrDefaultAsync();
+                person.Points += (int)treatment.Points;
 
-            return CreatedAtAction("GetAppointment", new { id = appointment.AppointmentId }, appointment);
+                appointment.Deleted = false;
+                appointment.ModifiedDate = DateTime.Now;
+                _context.Appointments.Add(appointment);
+                await _context.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // PUT: api/Appointment/5 To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
