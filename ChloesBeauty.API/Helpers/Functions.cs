@@ -7,7 +7,7 @@ namespace ChloesBeauty.API.Helpers
     public static class Functions
     {
         #region Public Methods
-
+        // Función para desencriptar usando MD5
         public static string Decrypt(string toDecrypt)
         {
             byte[] results;
@@ -37,6 +37,7 @@ namespace ChloesBeauty.API.Helpers
             return UTF8Encoding.UTF8.GetString(results);
         }
 
+        // Función para encriptar usando MD5
         public static string Encrypt(string toEncrypt)
         {
             byte[] results;

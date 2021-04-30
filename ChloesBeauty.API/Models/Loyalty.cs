@@ -4,15 +4,15 @@
 
 namespace ChloesBeauty.API.Models
 {
+    // Tabla Loyalty que ha mapeado el ORM
     public partial class Loyalty
     {
+        // Tiene relacionanada la tabla Treatment
         #region Public Properties
 
         public bool Deleted { get; set; }
 
         public int LoyaltyId { get; set; }
-
-        //public virtual Treatment LoyaltyNavigation { get; set; }
 
         public DateTime ModifiedDate { get; set; }
 

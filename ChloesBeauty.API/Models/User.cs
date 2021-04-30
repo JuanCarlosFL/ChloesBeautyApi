@@ -5,8 +5,11 @@ using System.Collections.Generic;
 
 namespace ChloesBeauty.API.Models
 {
+    // Tabla User que ha mapeado el ORM
     public partial class User
     {
+
+        // Tiene relacionadas las tablas UsersRole y Person
         public User()
         {
             UsersRoles = new HashSet<UsersRole>();

@@ -4,8 +4,10 @@
 
 namespace ChloesBeauty.API.Models
 {
+    // Tabla UsersRole que ha mapeado el ORM
     public partial class UsersRole
     {
+        // Tiene relacionadas las tablas Role y User
         #region Public Properties
 
         public DateTime ModifiedDate { get; set; }

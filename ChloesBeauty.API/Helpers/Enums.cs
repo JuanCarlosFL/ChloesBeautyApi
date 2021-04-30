@@ -7,6 +7,7 @@ namespace ChloesBeauty.API.Helpers
 {
     public class Enums
     {
+        // Enumeraciones usadas para no hardcodear los Roles
         public enum Roles 
         { 
             Administrator = 1,

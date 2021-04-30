@@ -4,8 +4,10 @@
 
 namespace ChloesBeauty.API.Models
 {
+    // Tabla Appointment que ha mapeado el ORM
     public partial class Appointment
     {
+        // Las tablas relacionadas son Availability, Person y Treatment
         #region Public Properties
 
         public int AppointmentId { get; set; }

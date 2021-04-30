@@ -114,11 +114,6 @@ namespace ChloesBeauty.API.Models
 
                 entity.Property(e => e.TreatmentId).HasColumnName("treatmentID");
 
-                //entity.HasOne(d => d.LoyaltyNavigation)
-                //    .WithOne(p => p.Loyalty)
-                //    .HasForeignKey<Loyalty>(d => d.LoyaltyId)
-                //    .OnDelete(DeleteBehavior.ClientSetNull)
-                //    .HasConstraintName("FK_Loyalties_Treatments_treatmentID");
             });
 
             modelBuilder.Entity<Person>(entity =>

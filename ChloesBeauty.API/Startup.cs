@@ -43,9 +43,9 @@ namespace ChloesBeauty.API
             }
 
             app.UseRouting();
-
+            // Middleware para el uso de Cors permitiendo cualquier origen, cualquier método y cualquier cabecera
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
+            // Middleware usado para la autenticación
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -58,10 +58,12 @@ namespace ChloesBeauty.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Guarda en el context la cadena de conexión de la BBDD que está en el appsettings.json
             services.AddDbContext<ChloesBeautyContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            // Configuración de la autenticación pasándole la llave secreta que está en el appsetings.json
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,7 +82,7 @@ namespace ChloesBeauty.API
                 };
             });
 
-            //JSON Serializer
+            // Configuración para resolver las anidaciones en los objetos json que devuelve la aplicación
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
